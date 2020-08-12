@@ -22,21 +22,19 @@ export default {
       this.$store.dispatch('getTemplateInfo', actCode).then((res) => {
         if(res.data.data){
           this.actId = res.data.data.id
-          //获取抽奖次数
-          this.$store.dispatch('getAmount', this.actId)
           this.template = JSON.parse(this.$store.state.templateInfo.actContent)
           console.log('接口actcontent', this.template)
-          const urls = {
-            codeUrl: false,
-            virtualUrl: false
-          }
-          if (this.template[1].modal.codePrize.btn.url) {
-            urls.codeUrl = true
-          }
-          if (this.template[1].modal.virtualPrize.btn.url) {
-            urls.virtualUrl = true
-          }
-          this.$bus.$emit('btnurl', urls)
+          // const urls = {
+          //   codeUrl: false,
+          //   virtualUrl: false
+          // }
+          // if (this.template[1].modal.signPrize.btn.url) {
+          //   urls.codeUrl = true
+          // }
+          // if (this.template[1].modal.virtualPrize.btn.url) {
+          //   urls.virtualUrl = true
+          // }
+          // this.$bus.$emit('btnurl', urls)
         }else{
           this.$router.push({
             name:"empty"

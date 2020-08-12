@@ -7,30 +7,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/home.vue'
 import empty from '../views/empty.vue'
-import helpDraw from '../views/helpDraw.vue'
-import winRecord from '../views/winRecord.vue'
-import awardDetail from '../views/awardDetail.vue'
+
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/awardDetail',
-    name: 'awardDetail',
-    component: awardDetail
-  },
-  {
-    path: '/winRecord',
-    name: 'winRecord',
-    component: winRecord
-  },
-  {
-    path: '/helpDraw',
-    name: 'helpDraw',
-    component: helpDraw
-  },
-  {
-    path: '/empty',
+    path: '/:actCode/empty',
     name: 'empty',
     component: empty
   },
