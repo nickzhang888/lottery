@@ -1,6 +1,11 @@
 <template>
   <div id="contisign" :style="{backgroundColor:bgcolor,backgroundImage: 'url(' + bgimg + ')'}">
+    
     <div class="content">
+      <div class="href_part">
+      <img src="../../assets/out.png" @click="goBack" class="left" />
+      <p>每日签到</p>
+    </div>
       <img class="banner" :src="config.banner.src" />
       <div class="alreadyText">您已连续签到{{alreadySignDays}}天</div>
       <div class="signtable">
@@ -149,6 +154,9 @@ export default {
     }
   },
   methods: {
+    goBack() {
+      history.go(-1);
+    },
     handleSign() {
       if (this.disabled) return;
       this.$get("/atpapi/act/actUserSign/userSign")
@@ -193,6 +201,24 @@ export default {
   height: 100%;
   background-size: contain;
   background-repeat: no-repeat;
+  .href_part {
+    height: 0.43rem;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    .left {
+      width: 0.2rem;
+      height: 0.2rem;
+      margin-left: 0.3rem;
+    }
+    p {
+      font-size: 0.18rem;
+      //   font-weight: 600;
+      color: #333;
+      margin-left: 1rem;
+    }
+    
+  }
   .bg {
     width: 100%;
   }
