@@ -157,9 +157,15 @@ export default {
     goBack() {
       history.go(-1);
     },
+    async getSign(){
+      let res = await this.$post("/atpapi/share/getSign")
+      return res 
+     
+    },
     handleSign() {
       if (this.disabled) return;
-      this.$get("/atpapi/act/actUserSign/userSign")
+      this.getSign().then(response=>{
+        this.$get(`/atpapi/act/actUserSign/userSign?sign=${response.data}`)
         .then(res => {
           if (res.code === "0000") {
             this.alreadySignDays += 1;
@@ -178,17 +184,19 @@ export default {
           }
         })
         .catch(err => {});
+      })
     }
   },
   mounted() {
-    this.$get("/atpapi/act/actUserSign/isOrSign").then(res => {
+    const actId = this.$route.query.id;
+    this.$get(`/atpapi/act/actUserSign/isOrSign?actId=${actId}`).then(res => {
       if (res.code === "0000") {
         this.disabled = res.data;
       }
     });
-    this.$get("/atpapi/act/actUserSign/data").then(res => {
+    this.$get(`/atpapi/act/actUserSign/data?actId=${actId}`).then(res => {
       if (res.code === "0000") {
-        this.alreadySignDays= res.data.signCount
+        this.alreadySignDays = res.data.signCount
       }
     });
     console.log(this.config);
