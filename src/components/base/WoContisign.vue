@@ -1,11 +1,10 @@
 <template>
   <div id="contisign" :style="{backgroundColor:bgcolor,backgroundImage: 'url(' + bgimg + ')'}">
-    
     <div class="content">
       <div class="href_part">
-      <img src="../../assets/out.png" @click="goBack" class="left" />
-      <p>每日签到</p>
-    </div>
+        <img src="../../assets/out.png" @click="goBack" class="left" />
+        <p>每日签到</p>
+      </div>
       <img class="banner" :src="config.banner.src" />
       <div class="alreadyText">您已连续签到{{alreadySignDays}}天</div>
       <div class="signtable">
@@ -157,54 +156,59 @@ export default {
     goBack() {
       history.go(-1);
     },
-    async getSign(){
-      const params={
-        	actId: this.$route.query.targetActId,
-	        actSetId: this.$route.query.actSetId,
-	        imgUrl: this.$route.query.imgUrl,
-	        targetActId: this.$route.query.actId
-      }
-      let res = await this.$post("/atpapi/share/getSign",params)
-      return res 
-     
+    async getSign() {
+      const params = {
+        actId: this.$route.query.targetActId,
+        actSetId: this.$route.query.actSetId,
+        imgUrl: this.$route.query.imgUrl,
+        targetActId: this.$route.query.actId
+      };
+      let res = await this.$post("/atpapi/share/getSign", params);
+      return res;
     },
     handleSign() {
       if (this.disabled) return;
-      this.getSign().then(response=>{
+      this.getSign().then(response => {
         this.$get(`/atpapi/act/actUserSign/userSign?sign=${response.data}`)
-        .then(res => {
-          if (res.code === "0000") {
-            this.alreadySignDays += 1;
-            this.disabled = true;
-            this.$toast("签到成功", 1000);
-            if (this.alreadySignDays === this.days) {
-              this.signSuccess = true;
-              this.$bus.$emit("showModal");
-              this.currentModal = this.config.modal.signPrize;
-              this.$get("/atpapi/act/actUserSign/signNumber").then(response => {
-                if (response.code === "0000") {
-                  this.signSuccessNum = response.data;
-                }
-              });
+          .then(res => {
+            if (res.code === "0000") {
+              this.alreadySignDays += 1;
+              this.disabled = true;
+              this.$toast("签到成功", 1000);
+              if (this.alreadySignDays === this.days) {
+                this.signSuccess = true;
+                this.$bus.$emit("showModal");
+                this.currentModal = this.config.modal.signPrize;
+                this.$get("/atpapi/act/actUserSign/signNumber").then(
+                  response => {
+                    if (response.code === "0000") {
+                      this.signSuccessNum = response.data;
+                    }
+                  }
+                );
+              }
             }
-          }
-        })
-        .catch(err => {});
-      })
+          })
+          .catch(err => {});
+      });
     }
   },
   mounted() {
     const actId = this.$route.query.targetActId;
-    this.$get(`/atpapi/act/actUserSign/isOrSign?actId=${actId}`).then(res => {
-      if (res.code === "0000") {
-        this.disabled = res.data;
-      }
+    console.log("actId:",actId);
+    this.$nextTick(() => {
+      this.$get(`/atpapi/act/actUserSign/isOrSign?actId=${actId}`).then(res => {
+        if (res.code === "0000") {
+          this.disabled = res.data;
+        }
+      });
+      this.$get(`/atpapi/act/actUserSign/data?actId=${actId}`).then(res => {
+        if (res.code === "0000") {
+          this.alreadySignDays = res.data.signCount;
+        }
+      });
     });
-    this.$get(`/atpapi/act/actUserSign/data?actId=${actId}`).then(res => {
-      if (res.code === "0000") {
-        this.alreadySignDays = res.data.signCount
-      }
-    });
+
     console.log(this.config);
   }
 };
@@ -231,7 +235,6 @@ export default {
       color: #333;
       margin-left: 1rem;
     }
-    
   }
   .bg {
     width: 100%;
