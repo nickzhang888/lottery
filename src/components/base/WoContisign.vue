@@ -158,7 +158,13 @@ export default {
       history.go(-1);
     },
     async getSign(){
-      let res = await this.$post("/atpapi/share/getSign")
+      const params={
+        	actId: this.$route.query.targetActId,
+	        actSetId: this.$route.query.actSetId,
+	        imgUrl: this.$route.query.imgUrl,
+	        targetActId: this.$route.query.actId
+      }
+      let res = await this.$post("/atpapi/share/getSign",params)
       return res 
      
     },
@@ -188,7 +194,7 @@ export default {
     }
   },
   mounted() {
-    const actId = this.$route.query.id;
+    const actId = this.$route.query.targetActId;
     this.$get(`/atpapi/act/actUserSign/isOrSign?actId=${actId}`).then(res => {
       if (res.code === "0000") {
         this.disabled = res.data;
