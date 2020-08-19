@@ -207,8 +207,12 @@ export default {
           this.alreadySignDays = res.data.signCount;
         }
       });
+      this.$get(`/atpapi/act/actUserSign/signDay?actId=${actId}`).then(res => {
+        if (res.code === "0000") {
+          this.days = res.data
+        }
+      });
     });
-
     console.log(this.config);
   }
 };
