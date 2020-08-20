@@ -26,24 +26,20 @@ export default {
   data() {
     return {
       isShow:false,
-      contisignDays: 7,
-      prizeName: "0.5元话费券"
+      contisignDays: '',
+      prizeName: ""
     };
   },
 
   methods: {
-    showLotteryModalConfigEditor() {
-      this.$store.commit("selectLotteryModal", this.config.name);
-    },
-    toggle(i) {
-      this.records[i].open = !this.records[i].open;
-    },
     close() {
       this.isShow = false;
     }
   },
   created() {
-    this.$bus.$on("showModal", receiptdata => {
+    this.$bus.$on("showModal", (prizename, days) => {
+      this.prizeName = prizename
+      this.contisignDays = days
       this.isShow = true;
     });
   }
