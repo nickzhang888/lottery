@@ -23,6 +23,7 @@ export default {
         if(res.data.data){
           this.actId = res.data.data.id
           this.template = JSON.parse(this.$store.state.templateInfo.actContent)
+          document.title = res.data.data.title || res.data.data.name
           console.log('接口actcontent', this.template)
           // const urls = {
           //   codeUrl: false,

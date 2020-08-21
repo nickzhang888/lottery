@@ -222,6 +222,9 @@ export default {
         this.$get(`/atpapi/act/actUserSign/data?actId=${this.actId}`).then(res => {
           if (res.code === "0000") {
             this.alreadySignDays = res.data.signCount;
+            // if (this.alreadySignDays === this.days) {
+            //     this.signSuccess = true;
+            // }
           } else {
             this.$toast(res.message, 3000);
           }
