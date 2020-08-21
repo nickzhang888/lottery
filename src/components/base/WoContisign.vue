@@ -163,7 +163,7 @@ export default {
         imgUrl: this.$route.query.imgUrl,
         targetActId: this.$route.query.actId
       };
-      let res = await this.$post("/atpapi/share/getSign", params);
+      let res = await this.$post("/atpapi/share/getSign", {...params});
       return res;
     },
     handleSign() {
