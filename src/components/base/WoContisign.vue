@@ -56,7 +56,7 @@ export default {
     return {
       alreadySignDays: 0,
       days: 7,
-      prizeName: "0.5话费券",
+      prizeName: "",
       signSuccess: false,
       signSuccessNum: "",
       bgimgExist: false,
@@ -177,16 +177,21 @@ export default {
               this.$toast("签到成功", 1000);
               if (this.alreadySignDays === this.days) {
                 this.signSuccess = true;
-                this.$bus.$emit("showModal");
+                const prizename = res.data.name
+                this.$bus.$emit("showModal", prizename, this.days);
                 this.currentModal = this.config.modal.signPrize;
-                this.$get("/atpapi/act/actUserSign/signNumber").then(
-                  response => {
-                    if (response.code === "0000") {
-                      this.signSuccessNum = response.data;
+                this.$get(`/atpapi/act/actUserSign/signNumber?actId=${this.$route.query.targetActId}`).then(
+                  res => {
+                    if (res.code === "0000") {
+                      this.signSuccessNum = res.data;
+                    } else {
+                      this.$toast(res.message, 3000);
                     }
                   }
                 );
               }
+            } else {
+              this.$toast(res.message, 3000);
             }
           })
           .catch(err => {});
@@ -197,23 +202,32 @@ export default {
     const actId= this.$store.state.templateInfo.id
     console.log("actId:",actId);
     this.$nextTick(() => {
+      // 今日是否已签到
       this.$get(`/atpapi/act/actUserSign/isOrSign?actId=${actId}`).then(res => {
         if (res.code === "0000") {
           this.disabled = res.data;
+        } else {
+          this.$toast(res.message, 3000);
         }
       });
       this.$get(`/atpapi/act/actUserSign/data?actId=${actId}`).then(res => {
         if (res.code === "0000") {
           this.alreadySignDays = res.data.signCount;
+        } else {
+          this.$toast(res.message, 3000);
         }
       });
+      // 连续签到天数配置数据获取
       this.$get(`/atpapi/act/actUserSign/signDay?actId=${actId}`).then(res => {
         if (res.code === "0000") {
           this.days = res.data
+        } else {
+          this.$toast(res.message, 3000);
         }
       });
     });
     console.log(this.config);
+    this.prizeName = this.$store.state.templateInfo.actActivityPrizes[0].prizeName
   }
 };
 </script>
