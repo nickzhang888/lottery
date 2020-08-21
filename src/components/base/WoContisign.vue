@@ -158,7 +158,7 @@ export default {
     },
     async getSign() {
       const params = {
-        actId: this.$route.query.targetActId,
+        actId: this.$store.state.templateInfo.id,
         actSetId: this.$route.query.actSetId,
         imgUrl: this.$route.query.imgUrl,
         targetActId: this.$route.query.actId
@@ -194,7 +194,7 @@ export default {
     }
   },
   mounted() {
-    const actId = this.$route.query.targetActId;
+    const actId= this.$store.state.templateInfo.id
     console.log("actId:",actId);
     this.$nextTick(() => {
       this.$get(`/atpapi/act/actUserSign/isOrSign?actId=${actId}`).then(res => {
