@@ -46,6 +46,7 @@
 </template>
 <script>
 import contisignModal from "./Contisignmodal.vue";
+import utils from "../../utils/utils";
 
 export default {
   name: "WoContisign",
@@ -61,7 +62,9 @@ export default {
       signSuccessNum: "",
       bgimgExist: false,
       currentModal: "",
-      disabled: false
+      disabled: false,
+      isLogin: false,
+      actId:""
     };
   },
   props: {
@@ -158,12 +161,12 @@ export default {
     },
     async getSign() {
       const params = {
-        actId: this.$store.state.templateInfo.id,
+        actId: this.actId,
         actSetId: this.$route.query.actSetId,
         imgUrl: this.$route.query.imgUrl,
         targetActId: this.$route.query.actId
       };
-      let res = await this.$post("/atpapi/share/getSign", {...params});
+      let res = await this.$post("/atpapi/share/getSign", { ...params });
       return res;
     },
     handleSign() {
@@ -174,21 +177,21 @@ export default {
             if (res.code === "0000") {
               this.alreadySignDays += 1;
               this.disabled = true;
-              this.$toast("签到成功", 1000);
+              this.alreadySignDays === this.days ? "" : this.$toast("签到成功", 1000);
               if (this.alreadySignDays === this.days) {
                 this.signSuccess = true;
-                const prizename = res.data.name
+                const prizename = res.data.name;
                 this.$bus.$emit("showModal", prizename, this.days);
                 this.currentModal = this.config.modal.signPrize;
-                this.$get(`/atpapi/act/actUserSign/signNumber?actId=${this.$route.query.targetActId}`).then(
-                  res => {
-                    if (res.code === "0000") {
-                      this.signSuccessNum = res.data;
-                    } else {
-                      this.$toast(res.message, 3000);
-                    }
+                this.$get(
+                  `/atpapi/act/actUserSign/signNumber?actId=${this.actId}`
+                ).then(res => {
+                  if (res.code === "0000") {
+                    this.signSuccessNum = res.data;
+                  } else {
+                    this.$toast(res.message, 3000);
                   }
-                );
+                });
               }
             } else {
               this.$toast(res.message, 3000);
@@ -199,35 +202,35 @@ export default {
     }
   },
   mounted() {
-    const actId= this.$store.state.templateInfo.id
-    console.log("actId:",actId);
-    this.$nextTick(() => {
-      // 今日是否已签到
-      this.$get(`/atpapi/act/actUserSign/isOrSign?actId=${actId}`).then(res => {
-        if (res.code === "0000") {
-          this.disabled = res.data;
-        } else {
-          this.$toast(res.message, 3000);
-        }
+    this.actId = this.$store.state.templateInfo.id;
+    this.days = this.$store.state.templateInfo.signDay
+    console.log("actId:", this.actId);
+    this.token = utils.getCookie("atpAuthToken");
+    if (this.token) {
+      this.isLogin = true;
+      this.$nextTick(() => {
+        // 今日是否已签到
+        this.$get(`/atpapi/act/actUserSign/isOrSign?actId=${this.actId}`).then(
+          res => {
+            if (res.code === "0000") {
+              this.disabled = res.data;
+            } else {
+              this.$toast(res.message, 3000);
+            }
+          }
+        );
+        this.$get(`/atpapi/act/actUserSign/data?actId=${this.actId}`).then(res => {
+          if (res.code === "0000") {
+            this.alreadySignDays = res.data.signCount;
+          } else {
+            this.$toast(res.message, 3000);
+          }
+        });
       });
-      this.$get(`/atpapi/act/actUserSign/data?actId=${actId}`).then(res => {
-        if (res.code === "0000") {
-          this.alreadySignDays = res.data.signCount;
-        } else {
-          this.$toast(res.message, 3000);
-        }
-      });
-      // 连续签到天数配置数据获取
-      this.$get(`/atpapi/act/actUserSign/signDay?actId=${actId}`).then(res => {
-        if (res.code === "0000") {
-          this.days = res.data
-        } else {
-          this.$toast(res.message, 3000);
-        }
-      });
-    });
+    }
+
     console.log(this.config);
-    this.prizeName = this.$store.state.templateInfo.actActivityPrizes[0].prizeName
+    this.prizeName = this.$store.state.templateInfo.actActivityPrizes[0].prizeName;
   }
 };
 </script>
