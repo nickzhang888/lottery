@@ -32,7 +32,7 @@
         :style="{backgroundColor:disabled?'#808080':config.signcss.bgcolor}"
         @click="handleSign"
       >{{isSign}}</div>
-      <div class="rule" @click.stop="showComponentConfigEditor('rule')">
+      <div class="rule">
         <div class="ruletitle" :style="{color:config.rule.titleColor}">规则说明：</div>
         <div
           :style="{color:config.rule.contentColor}"
@@ -169,10 +169,21 @@ export default {
       let res = await this.$post("/atpapi/share/getSign", { ...params });
       return res;
     },
+    signNumber(){
+      this.$get(
+           `/atpapi/act/actUserSign/signNumber?actId=${this.actId}`
+         ).then(res => {
+           if (res.code === "0000") {
+             this.signSuccessNum = res.data;
+           } else {
+             this.$toast(res.message, 3000);
+           }
+         });
+    },
     handleSign() {
       if (this.disabled) return;
-      this.getSign().then(response => {
-        this.$get(`/atpapi/act/actUserSign/userSign?sign=${response.data}`)
+        this.getSign().then(response => {
+         this.$get(`/atpapi/act/actUserSign/userSign?sign=${response.data}`)
           .then(res => {
             if (res.code === "0000") {
               this.alreadySignDays += 1;
@@ -183,22 +194,14 @@ export default {
                 const prizename = res.data.name;
                 this.$bus.$emit("showModal", prizename, this.days);
                 this.currentModal = this.config.modal.signPrize;
-                this.$get(
-                  `/atpapi/act/actUserSign/signNumber?actId=${this.actId}`
-                ).then(res => {
-                  if (res.code === "0000") {
-                    this.signSuccessNum = res.data;
-                  } else {
-                    this.$toast(res.message, 3000);
-                  }
-                });
+                this.signNumber()
               }
             } else {
               this.$toast(res.message, 3000);
             }
           })
           .catch(err => {});
-      });
+        });
     }
   },
   mounted() {
@@ -222,9 +225,10 @@ export default {
         this.$get(`/atpapi/act/actUserSign/data?actId=${this.actId}`).then(res => {
           if (res.code === "0000") {
             this.alreadySignDays = res.data.signCount;
-            // if (this.alreadySignDays === this.days) {
-            //     this.signSuccess = true;
-            // }
+            if (this.alreadySignDays === this.days) {
+                this.signSuccess = true;
+                this.signNumber()
+            }
           } else {
             this.$toast(res.message, 3000);
           }
