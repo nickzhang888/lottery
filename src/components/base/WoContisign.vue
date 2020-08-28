@@ -81,10 +81,10 @@ export default {
         let signsrc;
         if (i < this.alreadySignDays) {
           signsrc =
-            "http://h5test.wostore.cn/atp_resource/upload//atpweb/2020/08/10/2394092eb689f5cbc9872c1f30b58151.png";
+            `http://h5test.wostore.cn/atp_resource/upload//atpweb/2020/08/10/2394092eb689f5cbc9872c1f30b58151.png`;
         } else {
           signsrc =
-            "http://h5test.wostore.cn/atp_resource/upload//atpweb/2020/08/10/1d19f6d18536ef01ee2cb02dc18d2459.png";
+            `http://h5test.wostore.cn/atp_resource/upload//atpweb/2020/08/10/1d19f6d18536ef01ee2cb02dc18d2459.png`;
         }
         return signsrc;
       };
