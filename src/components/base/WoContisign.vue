@@ -223,8 +223,7 @@ export default {
         );
         this.$get(`/atpapi/act/actUserSign/data?actId=${this.actId}`).then(res => {
           if (res.code === "0000") {
-            this.alreadySignDays = res.data.signCount;
-            console.log(this.alreadySignDays,this.days,"比较天数");
+            this.alreadySignDays = res.data && res.data.signCount;
             if (this.alreadySignDays === this.days) {
                 this.signSuccess = true;
                 this.signNumber()
