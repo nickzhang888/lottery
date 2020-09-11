@@ -1,5 +1,9 @@
 <template>
   <div id="contisign" :style="{backgroundColor:bgcolor,backgroundImage: 'url(' + bgimg + ')'}">
+    <previewTips :isPreview="isPreview"></previewTips>
+    <div class="previewWarning" v-if="isPreview">
+      {{previewWarning}}
+    </div>
     <div class="content">
       <div class="href_part">
         <img src="../../assets/out.png" @click="goBack" class="left" />
@@ -47,14 +51,16 @@
 <script>
 import contisignModal from "./Contisignmodal.vue";
 import utils from "../../utils/utils";
-
+import previewTips from '../previewTips.vue'
 export default {
   name: "WoContisign",
   components: {
-    contisignModal
+    contisignModal,
+    previewTips
   },
   data() {
     return {
+      previewWarning: this.actCode === 'ACT202009102024187840004LUpRPx' ? '当前为模板预览模式，请勿将链接泄漏外传。' : '当前为测试预览模式，请勿将链接泄漏外传。',
       alreadySignDays: 0,
       days: 7,
       prizeName: "",
@@ -71,6 +77,18 @@ export default {
     config: {}
   },
   computed: {
+    isPreview() {
+      const { onlineStatus } = this.$store.state.templateInfo
+      if ( onlineStatus=== 1) {
+        return false
+      }
+      // 用于生成的预览图的链接
+      if (this.$route.query.gpp === '1') {
+        this.config.banners.length = 1
+        return false
+      }
+      return true
+    },
     isSign() {
       let text;
       text = this.disabled ? "今日已签到" : "签到";
@@ -246,6 +264,17 @@ export default {
   height: 100%;
   background-size: contain;
   background-repeat: no-repeat;
+  .previewWarning{
+    text-align: center;
+    background-color: rgba(0,0,0,.6);
+    position: fixed;
+    font-size: .16rem;
+    color: #fff;
+    width: 3.75rem;
+    height: .4rem;
+    line-height: .4rem;
+    z-index: 10;
+  }
   .href_part {
     height: 0.43rem;
     background-color: #fff;
