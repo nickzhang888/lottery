@@ -99,10 +99,10 @@ export default {
         let signsrc;
         if (i < this.alreadySignDays) {
           signsrc =
-            `http://h5test.wostore.cn/atp_resource/upload//atpweb/2020/08/10/2394092eb689f5cbc9872c1f30b58151.png`;
+            `${process.env.VUE_APP_PREURL}atp_resource/upload//atpweb/2020/08/10/2394092eb689f5cbc9872c1f30b58151.png`;
         } else {
           signsrc =
-            `http://h5test.wostore.cn/atp_resource/upload//atpweb/2020/08/10/1d19f6d18536ef01ee2cb02dc18d2459.png`;
+            `${process.env.VUE_APP_PREURL}atp_resource/upload//atpweb/2020/08/10/1d19f6d18536ef01ee2cb02dc18d2459.png`;
         }
         return signsrc;
       };
@@ -241,7 +241,7 @@ export default {
         );
         this.$get(`/atpapi/act/actUserSign/data?actId=${this.actId}`).then(res => {
           if (res.code === "0000") {
-            this.alreadySignDays = res.data && res.data.signCount;
+            this.alreadySignDays = res.data ? res.data.signCount : 0;
             if (this.alreadySignDays === this.days) {
                 this.signSuccess = true;
                 this.signNumber()
