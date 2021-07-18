@@ -32,7 +32,7 @@
         this.isShow = true
       }
       const actCode = this.$route.params.actCode
-      if (actCode === 'ACT202009102024187840004LUpRPx') {
+      if (actCode === 'ACT2020091019553735900081rSbth') {
         this.isTemplate = true
         this.text1 = '当前为模板预览模式，在该模式下：'
         this.text2 = '您可以进行模板活动体验'

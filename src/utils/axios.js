@@ -3,24 +3,23 @@ import axios from 'axios'
 // axios post请求默认Content-type是 application/json
 axios.defaults.timeout = 20000 // 20s没响应则认为该请求失败
 axios.defaults.withCredentials = true// 跨域时如果要带上cookie话则需要设置withCrendentials
-
+// axios.defaults.baseURL = "api"
 // http request 拦截器 所有请求发出前都需要执行以下代码
 axios.interceptors.request.use(
   (request) => request,
   (error) => Promise.reject(error)
 )
 
-// http response 拦截器 所有请求返回结果后都需要执行以下代码
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
     console.log(error.response)
     // 此处可对token过期等公用错误状态码进行处理
-    if (error.response.status === 401) {
-      window.location.href = `http://h5test.wostore.cn/login?clientId=activetemplate&redirectUrl=${encodeURIComponent(
-        window.location.href
-      )}`
-    }
+    // if (error.response.status === 401) {
+    //   window.location.href = `http://h5test.wostore.cn/login?clientId=activetemplate&redirectUrl=${encodeURIComponent(
+    //     window.location.href
+    //   )}`
+    // }
     // return Promise.reject(error)
   }
 )

@@ -1,81 +1,79 @@
-/*
- * @Date: 2020-04-09 11:00:48
- * @LastEditors: Pengyr
- * @LastEditTime: 2020-04-23 11:04:46
- */
-/* eslint-disable */
-const data = {
-  code: 0,
-  data: [
-    {
-      'name': 'woButton',
-      'cid': 'twko1anlw6lrawofpgzhq',
-      'text': '按钮',
-      'editor': 'woButtonEditor',
-      'style': {
-        'width': 188,
-        'height': 183,
-        'top': 243,
-        'left': 130,
-        'color': '#333333',
-        'backgroundColor': '#ffffff',
-        'borderRadius': 20,
-        'borderWidth': 1,
-        'borderColor': '#cccccc',
-        'borderStyle': 'solid'
-      }
-    },
-    {
-      'name': 'woText',
-      'cid': 'oeivq8hgf28bolkg4jk4sf',
-      'editor': 'woTextEditor',
-      'text': '这是一段文字',
-      'style': {
-        'width': 200,
-        'height': '63',
-        'lineHeight': '36',
-        'top': 180,
-        'left': 160,
-        'fontSize': '32',
-        'fontWeight': '700',
-        'color': '#B82727',
-        'textAlign': 'right'
-      }
-    },
-    {
-      'name': 'woImg',
-      'cid': 'r1fdxoiu8f8h8nijtzdts',
-      'editor': 'woImgEditor',
-      'src': 'http://xwxt.wostore.cn/upload/2019/01/16/1547618007077.png',
-      'style': {
-        'width': 377,
-        'height': 122,
-        'top': 1,
-        'left': 1,
-        'borderRadius': 37,
-        'borderWidth': 0,
-        'borderColor': '#cccccc',
-        'borderStyle': 'solid'
-      }
-    },
-    {
-      'name': 'woButton',
-      'cid': 'e6r5dr084gv8r6za1cznw3',
-      'text': '一个月给',
-      'editor': 'woButtonEditor',
-      'style': {
-        'width': 100,
-        'height': 40,
-        'top': 278,
-        'left': 174,
-        'color': '#D61010',
-        'backgroundColor': '#23A9E3',
-        'borderRadius': 13,
-        'borderWidth': 6,
-        'borderColor': '#1C7457',
-        'borderStyle': 'solid'
-      }
+const Mock = require('mockjs') // 获取mock对象
+const Random = Mock.Random // 获取random对象，随机生成各种数据，具体请翻阅文档
+
+// 随机生成文章数据
+const postData = req => {
+
+  console.log(req) // 请求体，用于获取参数
+
+  let data = [] // 用于存放文章数据的数组
+
+  for (let i = 0; i < 10; i++) {
+    let post = {
+      actId: 578,
+      actPrizeId: 630,
+      address: "南京",
+      createTime: "2020-10-08 13:38:26",
+      id: 2965,
+      phone: "123456789",
+      prizeCellIndex: Random.integer(1,7),
+      prizesDesc: "毛绒玩具",
+      prizesName: "毛绒玩具",
+      prizesStatus: 1,
+      prizesType:Random.integer(1,7),
+      prizesTypeName: "实物",
+      realname: "张三",
+      seq: "MK202010081338266031841spKAzd",
+      userId: "U202007081538496510023hTm2oE",
+
+      // title: Random.csentence(10, 25), // 随机生成长度为10-25的标题
+      // icon: Random.dataImage('250x250', '文章icon'), // 随机生成大小为250x250的图片链接
+      // author: Random.cname(), // 随机生成名字
+      // date: Random.date() + ' ' + Random.time() // 随机生成年月日 + 时间
     }
-  ]
+
+    data.push(post)
+  }
+
+  // 返回状态码和文章数据posts
+  return {
+    code: "0000",
+    data,
+    messgae: "成功"
+  }
 }
-export default data
+
+// 定义请求链接，类型，还有返回数据
+Mock.mock(`api/record`, 'get', postData);
+
+// export default {
+//     'GET /act/lottery/act/record': (req, res) => {
+//         const {
+//             page,
+//             size,
+//         } = req.query;
+//         let data = {}
+//         data = mockjs.mock({
+//             'data|137': [{
+//                 'key|+1': 1,
+//                 name: '@cname',
+//                 'age|1-100': 20,
+//                 city: '@city',
+//                 province: "@province",
+//                 hobby: /吃饭|睡觉/,
+//                 cityArr:[]
+//             }],
+//         });
+
+//         res.status(200).send({
+//             data: {
+//                 data: data.data,
+//                 current: +page || 1,
+//                 pageSize: +size || 10,
+//                 total: data.data.length,
+//             },
+//             httpStatus: 200,
+//             msg: '查询成功',
+//         });
+//     },
+// };
